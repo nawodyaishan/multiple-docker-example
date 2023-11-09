@@ -1,4 +1,4 @@
-![Untitled](https://github.com/nawodyaishan/multiple-docker-example/assets/50957846/174c9378-09a3-43ff-b916-e6ca56b1166f)# Creating Docker File
+# Creating Docker File
 
 A `Dockerfile` is a script used by Docker to automate the building of container images. It contains a set of instructions that specify the base image and the steps required to configure the environment and deploy your application within a container. Here's a breakdown of the common components and instructions you might find in a `Dockerfile`:
 
