@@ -2,7 +2,7 @@ version: '3' # Specifies the version of the Docker Compose file format
 
 services: # Defines the services that make up your application
 
-  redis-server: # Name of the first service
+  my-redis: # Name of the first service
     image: 'redis' # Specifies the Redis image from Docker Hub
 
   node-app: # Name of the second service
