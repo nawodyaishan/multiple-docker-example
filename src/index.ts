@@ -1,37 +1,49 @@
-import express, {Request, Response} from 'express';
-import {createClient} from 'redis';
+import express from 'express';
+import {createClient, RedisClientType} from 'redis';
 
-// Create an Express application
 const app: express.Application = express();
 
-// Define the port to run the server on
-const PORT: string | number = process.env.PORT || 3000;
+// Create a Redis client with default configuration
+// This will connect to Redis running on localhost:6379
+const client: RedisClientType = createClient();
 
-// Create a Redis client using the modern createClient function
-const client = createClient({});
+// Connect to Redis and handle any connection errors
+client.connect().catch((err: Error) => console.error('Redis Connection Error:', err));
 
-// Establish a connection with the Redis client
-client.connect().catch(console.error);
+// Error event listener for the Redis client
+client.on('error', (err) => console.error('Redis Client Error:', err));
 
-app.get('/', async (req: Request, res: Response) => {
+// Initialize the 'visits' key in Redis
+(async () => {
     try {
-        // Try to get the number of visits from Redis
-        let visits = await client.get('visits');
-        let visitCount: number = parseInt(visits ?? '0') + 1;
+        await client.set('visits', '0');
+    } catch (err) {
+        console.error('Error initializing Redis:', err);
+    }
+})();
 
-        // Increment the visit count and store it back in Redis
-        await client.set('visits', visitCount.toString());
+// Define a route to track and display the number of visits
+app.get('/', async (req: express.Request, res: express.Response) => {
+    try {
+        // Retrieve the current visit count from Redis
+        const visits = await client.get('visits');
 
-        // Send a JSON response with the visit count
-        res.json({message: 'Yeah! Docker baby 🐳', visits: visitCount});
-    } catch (error) {
-        // If an error occurs, send a server error status code
-        console.error(error);
-        res.status(500).send('Something went wrong with Redis');
+        // Increment and update the visit count in Redis
+        await client.set('visits', (parseInt(visits ?? '0') + 1).toString());
+
+        // Send the current visit count as a response
+        res.send('Number of visits is ' + visits);
+    } catch (err) {
+        // Handle any errors during Redis operations
+        console.error('Redis Operation Error:', err);
+        res.status(500).send('Something went wrong');
     }
 });
 
+// Define the server port (default to 4001 if not set in environment)
+const PORT = process.env.PORT || 4001;
+
 // Start the Express server
 app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
