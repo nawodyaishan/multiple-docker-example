@@ -12,7 +12,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "serve": "node dist/index.js"
+    "serve": "tsc && node dist/index.js"
   },
   "devDependencies": {
     "@types/redis": "^4.0.11",
