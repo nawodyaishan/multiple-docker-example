@@ -4,8 +4,10 @@ services: # Defines the services that make up your application
 
   my-redis: # Name of the first service
     image: 'redis' # Specifies the Redis image from Docker Hub
+    restart: on-failure
 
   node-app: # Name of the second service
+    restart: always
     build: . # Builds an image using the Dockerfile in the current directory
     ports:
       - "4001:4001" # Maps port 4001 inside the container to port 4001 on the host
