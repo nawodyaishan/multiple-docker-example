@@ -21,4 +21,4 @@ RUN pnpm install
 COPY . .
 
 # Define the command to run the application when the container starts
-CMD ["pnpm","start"]
+CMD ["pnpm","serve"]
